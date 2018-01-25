@@ -1,7 +1,9 @@
 # Playing pong using EEG
 ## Not ready yet!
+<p align="center">
+<img src="/README/pong.png" alt="Pong_screen" width="300px"/>
+</p>
 
-<center> ![Pong_screen](/README/pong.png) </center>
 
 ## Getting started
 
