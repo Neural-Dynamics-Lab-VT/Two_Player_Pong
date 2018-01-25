@@ -1,7 +1,7 @@
 # Playing pong using EEG
 ## Not ready yet!
 
-![Pong_screen](/README/pong.png)
+<center> ![Pong_screen](/README/pong.png) </center>
 
 ## Getting started
 
