@@ -57,31 +57,32 @@ class PongGame(Widget):
     ball = ObjectProperty(None)
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
+    game = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(PongGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.speed = 25
-        self.beta_threshold = 25
+        self.beta_threshold = 0.5
 
         # TODO: Add paddle momentum
-        # TODO: Paddle forced to move to a fi
+        # TODO: Change beta_threshold for actual EEG signal
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'w':
+        if keycode[1] == 'w' and self.player1.center_y < self.game.height - 100:
             print("Up")
             self.player1.center_y += self.speed
-        elif keycode[1] == 's':
+        elif keycode[1] == 's' and self.player1.center_y > 100:
             print("Down")
             self.player1.center_y -= self.speed
-        elif keycode[1] == 'up':
+        elif keycode[1] == 'up' and self.player2.center_y < self.game.height - 100:
             self.player2.center_y += self.speed
-        elif keycode[1] == 'down':
+        elif keycode[1] == 'down' and self.player2.center_y > 100:
             self.player2.center_y -= self.speed
         return True
 
@@ -111,16 +112,16 @@ class PongGame(Widget):
             self.player1.score += 1
             self.serve_ball(vel=(-4, 0))
 
-        if sample_1[0] > self.beta_threshold:
+        if sample_1[0] > self.beta_threshold and self.player1.center_y < self.game.height - 100:
             self.player1.center_y += self.speed
 
-        if sample_1[0] <= self.beta_threshold:
+        if sample_1[0] <= self.beta_threshold and self.player1.center_y > 100:
             self.player1.center_y -= self.speed
 
-        if sample_2[0] > self.beta_threshold:
+        if sample_2[0] > self.beta_threshold and self.player2.center_y < self.game.height - 100:
             self.player2.center_y += self.speed
 
-        if sample_2[0] <= self.beta_threshold:
+        if sample_2[0] <= self.beta_threshold and self.player2.center_y > 100:
             self.player2.center_y -= self.speed
 
     def on_touch_move(self, touch):
