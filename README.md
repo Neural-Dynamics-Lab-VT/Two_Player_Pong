@@ -1,9 +1,12 @@
 # Playing pong using EEG
-## Under development
+## Not ready yet!
 
 ## Getting started
 
 ### Requirements
+1. [Kivy (1.10.0)](https://kivy.org/#home) or later.
+
+2. Python Lab Streaming Layer. TL;DR `pip install pylsl`. Follow [this](https://github.com/sccn/labstreaminglayer) repo.
 
 
 ### Running
@@ -14,6 +17,8 @@ for more details.
 EEG signal and extracts the beta power which is later streamed using LSL.
 
 3. Run `play_pong.py` to start the game.
+
+### Have fun!
  
 
 
