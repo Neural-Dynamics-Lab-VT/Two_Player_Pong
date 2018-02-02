@@ -1,5 +1,11 @@
 # Playing pong using EEG
 ## Not ready yet!
+
+### TODO:
+- [] Beta rebound on openVibe
+- [] Beta rebound references
+- [] Fix frame rate issues
+
 <p align="center">
 <img src="/README/pong.png" alt="Pong_screen" width="600px"/>
 </p>
