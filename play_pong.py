@@ -5,6 +5,7 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
 from pylsl import StreamInlet, resolve_stream
+import numpy as np
 
 
 def get_lsl_signal_stream():
@@ -16,8 +17,8 @@ def get_lsl_signal_stream():
     print("Received no of streams: {}".format(len(streams)))
 
     # create a new inlet to read from the stream
-    inlet_1 = StreamInlet(streams[0])
-    inlet_2 = StreamInlet(streams[1])
+    inlet_1 = StreamInlet(streams[1])
+    inlet_2 = StreamInlet(streams[0])
 
     return inlet_1, inlet_2
 
@@ -58,13 +59,14 @@ class PongGame(Widget):
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
     game = ObjectProperty(None)
+    ball_velocity = 10
 
     def __init__(self, **kwargs):
         super(PongGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.speed = 25
-        self.beta_threshold = 0.5
+        self.beta_threshold = 0.1
 
         # TODO: Add paddle momentum
         # TODO: Change beta_threshold for actual EEG signal
@@ -86,7 +88,7 @@ class PongGame(Widget):
             self.player2.center_y -= self.speed
         return True
 
-    def serve_ball(self, vel=(4, 0)):
+    def serve_ball(self, vel=(ball_velocity, 0)):
         self.ball.center = self.center
         self.ball.velocity = vel
 
@@ -94,7 +96,7 @@ class PongGame(Widget):
         self.ball.move()
 
         sample_1, _ = inlet_1.pull_sample()
-        sample_2, _ = inlet_2.pull_sample()
+        #sample_2, _ = inlet_2.pull_sample()
 
         # bounce of paddles
         self.player1.bounce_ball(self.ball)
@@ -107,22 +109,24 @@ class PongGame(Widget):
         # went of to a side to score point?
         if self.ball.x < self.x:
             self.player2.score += 1
-            self.serve_ball(vel=(4, 0))
+            self.serve_ball(vel=(self.ball_velocity, 0))
         if self.ball.x > self.width:
             self.player1.score += 1
-            self.serve_ball(vel=(-4, 0))
+            self.serve_ball(vel=(-self.ball_velocity, 0))
 
-        if sample_1[0] > self.beta_threshold and self.player1.center_y < self.game.height - 100:
+        avg_beta_signal = np.mean(sample_1)
+
+        if avg_beta_signal > self.beta_threshold and self.player1.center_y < self.game.height - 100:
             self.player1.center_y += self.speed
 
-        if sample_1[0] <= self.beta_threshold and self.player1.center_y > 100:
+        if avg_beta_signal <= self.beta_threshold and self.player1.center_y > 100:
             self.player1.center_y -= self.speed
 
-        if sample_2[0] > self.beta_threshold and self.player2.center_y < self.game.height - 100:
-            self.player2.center_y += self.speed
-
-        if sample_2[0] <= self.beta_threshold and self.player2.center_y > 100:
-            self.player2.center_y -= self.speed
+        # if sample_2[0] > self.beta_threshold and self.player2.center_y < self.game.height - 100:
+        #     self.player2.center_y += self.speed
+        #
+        # if sample_2[0] <= self.beta_threshold and self.player2.center_y > 100:
+        #     self.player2.center_y -= self.speed
 
     def on_touch_move(self, touch):
         if touch.x < self.width / 3:
@@ -138,7 +142,7 @@ class PongApp(App):
     def build(self):
         game = PongGame()
         game.serve_ball()
-        Clock.schedule_interval(game.update, 1.0 / 300.0)
+        Clock.schedule_interval(game.update, 1.0 / 60.0)
         print("The game's running")
         return game
 
