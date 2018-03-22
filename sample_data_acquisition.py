@@ -8,7 +8,7 @@ print("looking for an EEG stream...")
 streams = resolve_stream('type', 'EEG')
 
 # create a new inlet to read from the stream
-inlet = StreamInlet(streams[1])
+inlet = StreamInlet(streams[0])
 
 print("No of streams: {}".format(len(streams)))
 
@@ -17,3 +17,4 @@ while True:
     # interested in it)
     sample, timestamp = inlet.pull_sample()
     print(np.array(sample).shape)
+    print(sample)
