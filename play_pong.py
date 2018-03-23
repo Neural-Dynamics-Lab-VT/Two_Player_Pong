@@ -1,11 +1,11 @@
+import numpy as np
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
-from kivy.vector import Vector
 from kivy.clock import Clock
+from kivy.vector import Vector
+from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from pylsl import StreamInlet, resolve_stream
-import numpy as np
+from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
 
 
 def get_lsl_signal_stream():
