@@ -17,8 +17,19 @@ def get_lsl_signal_stream():
     print("Received no of streams: {}".format(len(streams)))
 
     # create a new inlet to read from the stream
-    inlet_1 = StreamInlet(streams[2])
-    inlet_2 = StreamInlet(streams[0])
+    inlet_1 = None
+    inlet_2 = None
+    for s in streams:
+        stream_name = StreamInlet(s).info().name()
+        if stream_name == "PongPlayer1":
+            inlet_1 = StreamInlet(s)
+        elif stream_name == "PongPlayer2":
+            inlet_2 = StreamInlet(s)
+
+    if inlet_1 is None:
+        print("Stream for player 1 not found. Please ensure that the scenario is running.")
+    if inlet_2 is None:
+        print("Stream for player 2 not found. Please ensure that the scenario is running.")
 
     return inlet_1, inlet_2
 
@@ -129,13 +140,6 @@ class PongGame(Widget):
         if avg_beta_signal_2 <= self.beta_threshold and self.player2.center_y > 100:
             self.player2.center_y -= self.speed
 
-
-        # if sample_2[0] > self.beta_threshold and self.player2.center_y < self.game.height - 100:
-        #     self.player2.center_y += self.speed
-        #
-        # if sample_2[0] <= self.beta_threshold and self.player2.center_y > 100:
-        #     self.player2.center_y -= self.speed
-
     def on_touch_move(self, touch):
         if touch.x < self.width / 3:
             self.player1.center_y = touch.y
@@ -147,6 +151,7 @@ class PongApp(App):
     """
     A class to start the game.
     """
+
     def build(self):
         game = PongGame()
         game.serve_ball()
