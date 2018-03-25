@@ -8,7 +8,7 @@ print("looking for an EEG stream...")
 streams = resolve_stream('type', 'EEG')
 
 # create a new inlet to read from the stream
-inlet = StreamInlet(streams[0])
+inlet = StreamInlet(streams[1])
 
 print("No of streams: {}".format(len(streams)))
 
