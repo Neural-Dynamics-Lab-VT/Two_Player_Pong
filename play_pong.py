@@ -19,9 +19,10 @@ def get_lsl_signal_stream():
     # create a new inlet to read from the stream
     inlet_1 = None
     inlet_2 = None
+    # TODO: Change the stream_name to the desired value
     for s in streams:
         stream_name = StreamInlet(s).info().name()
-        if stream_name == "PongPlayer1":
+        if stream_name == "Player_1":
             inlet_1 = StreamInlet(s)
         elif stream_name == "PongPlayer2":
             inlet_2 = StreamInlet(s)
@@ -78,11 +79,9 @@ class PongGame(Widget):
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.speed = 25
         self.beta_threshold = 2
-        self.left_movement_threshold = 0.3
-        self.right_movement_threshold = 0.3
+        self.left_movement_threshold = 0.2
+        self.right_movement_threshold = 0.2
 
-        # TODO: Add paddle momentum
-        # TODO: Change beta_threshold for actual EEG signal
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
