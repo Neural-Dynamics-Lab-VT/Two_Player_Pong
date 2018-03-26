@@ -2,8 +2,6 @@
 ## Not ready yet!
 
 ### TODO:
-- [] Beta rebound on openVibe
-- [] Beta rebound references
 - [] Fix frame rate issues
 
 <p align="center">
